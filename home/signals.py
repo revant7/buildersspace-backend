@@ -7,10 +7,6 @@ from .models import (
     RavenclawParticipant,
     SlytherinParticipant,
     PhoenixParticipant,
-    Vote,
-    Like,
-    VoteCount,
-    LikeCount,
 )
 
 
@@ -54,25 +50,3 @@ def update_house_participant(sender, instance, created, **kwargs):
                 SlytherinParticipant.objects.create(participant=instance)
             elif instance.house == "Phoenix":
                 PhoenixParticipant.objects.create(participant=instance)
-
-
-def cast_vote(request, project_id):
-    # ... (your logic to get attendee and project)
-    vote = Vote.objects.create(attendee=attendee, project=project)
-    vote_count, created = VoteCount.objects.get_or_create(
-        project=project, defaults={"count": 0}
-    )
-    vote_count.count += 1
-    vote_count.save()
-    # ... (rest of your view logic)
-
-
-def do_like(request, project_id):
-    # ... (your logic to get attendee and project)
-    vote = Vote.objects.create(attendee=attendee, project=project)
-    vote_count, created = VoteCount.objects.get_or_create(
-        project=project, defaults={"count": 0}
-    )
-    vote_count.count += 1
-    vote_count.save()
-    # ... (rest of your view logic)

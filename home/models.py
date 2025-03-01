@@ -130,11 +130,13 @@ class Project(models.Model):
 
 
 class Vote(models.Model):
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name="project_votes",
+    )
     attendee = models.ForeignKey(
         Attendee, on_delete=models.CASCADE, related_name="attendees"
-    )
-    project = models.ForeignKey(
-        Project, on_delete=models.CASCADE, related_name="project_votes"
     )
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -146,6 +148,11 @@ class Vote(models.Model):
 
 
 class Like(models.Model):
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name="project_likes",
+    )
     participant = models.ForeignKey(
         Participant,
         on_delete=models.CASCADE,
@@ -159,9 +166,6 @@ class Like(models.Model):
         related_name="attendee_like",
         null=True,
         blank=True,
-    )
-    project = models.ForeignKey(
-        Project, on_delete=models.CASCADE, related_name="project_likes"
     )
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -179,7 +183,7 @@ class Like(models.Model):
 
 class VoteCount(models.Model):
     project = models.OneToOneField(
-        Project, on_delete=models.CASCADE, related_name="vote_count"
+        Project, on_delete=models.CASCADE, related_name="vote_count", primary_key=True
     )
     count = models.IntegerField(default=0)
 
@@ -193,7 +197,7 @@ class VoteCount(models.Model):
 
 class LikeCount(models.Model):
     project = models.OneToOneField(
-        Project, on_delete=models.CASCADE, related_name="like_count"
+        Project, on_delete=models.CASCADE, related_name="like_count", primary_key=True
     )
     count = models.IntegerField(default=0)
 
@@ -207,7 +211,7 @@ class LikeCount(models.Model):
 
 class SocialLinks(models.Model):
     user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name="social_links"
+        User, on_delete=models.CASCADE, related_name="social_links", primary_key=True
     )
     instagram = models.URLField(blank=True, null=True)
     github = models.URLField(blank=True, null=True)
@@ -232,7 +236,7 @@ class ParticipantNotification(models.Model):
 
     def __str__(self):
         if self.recipient:
-            return f"Notification to {self.recipient.user.first_name}: {self.message[:50]}..."
+            return f"Notification to {self.participant.user.first_name}: {self.message[:50]}..."
         elif self.house:
             return f"Notification to {self.house} house: {self.message[:50]}..."
         else:
