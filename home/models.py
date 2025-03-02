@@ -264,9 +264,7 @@ class ParticipantNotification(models.Model):
     notification_title = models.CharField(max_length=256, null=True, blank=True)
     notification_message = models.TextField(default="", null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
-    house = models.CharField(
-        max_length=32, choices=Participant.OPTION_CHOICES, null=True, blank=True
-    )
+    house = models.CharField(max_length=64, choices=Participant.OPTION_CHOICES)
     is_read = models.BooleanField(default=False, null=True, blank=True)
 
     def __str__(self):
