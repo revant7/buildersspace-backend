@@ -72,13 +72,19 @@ def register_user(request):
 
         models.VoteCount(project=project).save()
         models.LikeCount(project=project).save()
-        models.SocialLinks(user=user).save()
-        models.ParticipantNotification(
-            participant=participant,
+        models.SocialLinks(
+            user=user,
             instagram=request.data.get("instagram"),
             github=request.data.get("github"),
             twitter=request.data.get("twitter"),
             linkedin=request.data.get("linkedin"),
+        ).save()
+        models.ParticipantNotification(
+            participant=participant,
+            notification_title=request.data.get("notification_title"),
+            notification_message=request.data.get("notification_message"),
+            house=request.data.get("house"),
+            is_read=request.data.get("is_read"),
         ).save()
 
     if user.is_attendee:
