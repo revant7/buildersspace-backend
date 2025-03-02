@@ -133,7 +133,6 @@ def custom_token_obtain_view(request):
             "last_name": user.last_name,
             "is_attendee": user.is_attendee,
             "is_participant": user.is_participant,
-            "is_staff": user.is_staff,
         }
     )
 

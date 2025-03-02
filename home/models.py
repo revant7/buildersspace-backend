@@ -262,12 +262,12 @@ class ParticipantNotification(models.Model):
         Participant, on_delete=models.CASCADE, related_name="user_notifications"
     )
     notification_title = models.CharField(max_length=256, null=True, blank=True)
-    notification_message = models.TextField(default="")
+    notification_message = models.TextField(default="", null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     house = models.CharField(
         max_length=32, choices=Participant.OPTION_CHOICES, null=True, blank=True
     )
-    is_read = models.BooleanField(default=False)
+    is_read = models.BooleanField(default=False, null=True, blank=True)
 
     def __str__(self):
         if self.participant:
