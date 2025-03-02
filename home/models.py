@@ -269,13 +269,11 @@ class ParticipantNotification(models.Model):
 
     def __str__(self):
         if self.participant:
-            return f"Notification to {self.participant.user.first_name}: {self.notification_title[:40]}..."
+            return f"Notification to {self.participant.user.first_name}: {self.notification_title}"
         elif self.house:
-            return (
-                f"Notification to {self.house} house: {self.notification_title[:40]}..."
-            )
+            return f"Notification to {self.house} house: {self.notification_title}"
         else:
-            return f"Notification to all: {self.notification_title[:40]}..."
+            return f"Notification to all: {self.notification_title}"
 
     class Meta:
         ordering = ["-timestamp"]  # Show latest notifications first
