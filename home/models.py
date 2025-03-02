@@ -270,12 +270,14 @@ class ParticipantNotification(models.Model):
     is_read = models.BooleanField(default=False)
 
     def __str__(self):
-        if self.recipient:
-            return f"Notification to {self.participant.user.first_name}: {self.message[:50]}..."
+        if self.participant:
+            return f"Notification to {self.participant.user.first_name}: {self.notification_title[:40]}..."
         elif self.house:
-            return f"Notification to {self.house} house: {self.message[:50]}..."
+            return (
+                f"Notification to {self.house} house: {self.notification_title[:40]}..."
+            )
         else:
-            return f"Notification to all: {self.message[:50]}..."
+            return f"Notification to all: {self.notification_title[:40]}..."
 
     class Meta:
         ordering = ["-timestamp"]  # Show latest notifications first
