@@ -26,7 +26,6 @@ def register_user(request):
     mobile_number = request.data.get("mobile_number")
     is_participant = request.data.get("is_participant", False)
     is_attendee = request.data.get("is_attendee", False)
-    print(email, password)
     if not email or not password or not first_name or not mobile_number:
         return JsonResponse(
             {
@@ -106,16 +105,14 @@ def register_user(request):
 def custom_token_obtain_view(request):
     email = request.data.get("email")
     password = request.data.get("password")
-    print(email, password)
 
     if not email or not password:
         return JsonResponse(
             {"error": "Both email and password are required."}, status=400
         )
 
-    user = authenticate(email=email, password=password)
-
-    if not user:
+    user = User.objects.get(email=email)
+    if not user.check_password(password):
         return JsonResponse({"error": "Invalid email or password."}, status=401)
 
     refresh = RefreshToken.for_user(user)
