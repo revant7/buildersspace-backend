@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from .models import (
     Admin,
     User,
@@ -21,7 +22,33 @@ from .models import (
 # Register your models here.
 
 
-admin.site.register(Admin)
+class CustomAdmin(UserAdmin):
+    list_display = (
+        "email",
+        "first_name",
+        "last_name",
+    )
+    fieldsets = (
+        ("Login Credentials", {"fields": ("email", "password")}),
+        ("Personal Info", {"fields": ("first_name", "last_name")}),
+        (
+            "Permissions",
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                )
+            },
+        ),
+        ("Important Dates", {"fields": ("last_login",)}),
+    )
+    ordering = ("email",)
+
+
+admin.site.register(Admin, CustomAdmin)
 admin.site.register(User)
 admin.site.register(Participant)
 admin.site.register(Attendee)
