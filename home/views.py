@@ -74,7 +74,13 @@ def register_user(request):
         models.VoteCount(project=project).save()
         models.LikeCount(project=project).save()
         models.SocialLinks(user=user).save()
-        models.ParticipantNotification(participant=participant).save()
+        models.ParticipantNotification(
+            participant=participant,
+            instagram=request.data.get("instagram"),
+            github=request.data.get("github"),
+            twitter=request.data.get("twitter"),
+            linkedin=request.data.get("linkedin"),
+        ).save()
 
     if user.is_attendee:
         attendee = models.Attendee(user=user)
@@ -128,6 +134,9 @@ def custom_token_obtain_view(request):
     )
 
 
+# cast the vote
+
+
 def cast_vote(request):
     user = request.user
     if user.is_attendee:
@@ -142,6 +151,9 @@ def cast_vote(request):
         vote_count = models.VoteCount.objects.get(project=project)
         vote_count.count += 1
         vote_count.save()
+
+
+# post like
 
 
 def do_like(request):

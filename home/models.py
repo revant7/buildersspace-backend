@@ -292,7 +292,7 @@ class GryffindorParticipant(models.Model):
     )
 
     def __str__(self):
-        return self.participant.name
+        return f"{self.participant.user.first_name} - {self.participant.user.email}"
 
     class Meta:
         verbose_name = "Gryffindor Participant"
@@ -305,7 +305,7 @@ class HufflepuffParticipant(models.Model):
     )
 
     def __str__(self):
-        return self.participant.name
+        return f"{self.participant.user.first_name} - {self.participant.user.email}"
 
     class Meta:
         verbose_name = "Hufflepuff Participant"
@@ -318,7 +318,7 @@ class RavenclawParticipant(models.Model):
     )
 
     def __str__(self):
-        return self.participant.name
+        return f"{self.participant.user.first_name} - {self.participant.user.email}"
 
     class Meta:
         verbose_name = "Ravenclaw Participant"
@@ -331,7 +331,7 @@ class SlytherinParticipant(models.Model):
     )
 
     def __str__(self):
-        return self.participant.name
+        return f"{self.participant.user.first_name} - {self.participant.user.email}"
 
     class Meta:
         verbose_name = "Slytherin Participant"
@@ -344,7 +344,7 @@ class PhoenixParticipant(models.Model):
     )
 
     def __str__(self):
-        return self.participant.name
+        return f"{self.participant.user.first_name} - {self.participant.user.email}"
 
     class Meta:
         verbose_name = "Phoenix Participant"
