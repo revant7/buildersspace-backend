@@ -20,7 +20,7 @@ User = models.User
 @permission_classes([permissions.AllowAny])
 def register_user(request):
     email = request.data.get("email")
-    password = utils.generate_random_password()
+    password = request.data.get("password")
     first_name = request.data.get("first_name")
     last_name = request.data.get("last_name", "")
     mobile_number = request.data.get("mobile_number")
