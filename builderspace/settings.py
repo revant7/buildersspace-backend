@@ -84,7 +84,7 @@ SIMPLE_JWT = {
 }
 
 
-AUTH_USER_MODEL = "home.User"
+AUTH_USER_MODEL = "home.Admin"
 
 TEMPLATES = [
     {

@@ -13,8 +13,7 @@ from . import models, utils
 
 
 # User registration view
-
-User = get_user_model()
+User = models.User
 
 
 @api_view(["POST"])
