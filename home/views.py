@@ -17,7 +17,7 @@ User = models.User
 
 
 @api_view(["POST"])
-@permission_classes([permissions.AllowAny])
+@permission_classes([IsTokenAuthenticated])
 def register_user(request):
     email = request.data.get("email")
     password = utils.generate_random_password()
@@ -108,7 +108,7 @@ def register_user(request):
 
 
 @api_view(["POST"])
-@permission_classes([permissions.AllowAny])
+@permission_classes([IsTokenAuthenticated])
 def custom_token_obtain_view(request):
     email = request.data.get("email")
     password = request.data.get("password")
@@ -141,6 +141,8 @@ def custom_token_obtain_view(request):
 # cast the vote
 
 
+@api_view(["POST"])
+@permission_classes([IsTokenAuthenticated])
 def cast_vote(request):
     user = request.user
     if user.is_attendee:
@@ -160,6 +162,8 @@ def cast_vote(request):
 # post like
 
 
+@api_view(["POST"])
+@permission_classes([IsTokenAuthenticated])
 def do_like(request):
     user = request.user
     project = request.project
@@ -448,7 +452,7 @@ def get_user_details(request):
 
 
 @api_view(["GET"])
-@permission_classes([permissions.AllowAny])
+@permission_classes([IsTokenAuthenticated])
 def get_vote_count_for_all_projects(request):
     projects_vote_counts = models.VoteCount.objects.all()
     data_list = []
@@ -467,7 +471,7 @@ def get_vote_count_for_all_projects(request):
 
 
 @api_view(["GET"])
-@permission_classes([permissions.AllowAny])
+@permission_classes([IsTokenAuthenticated])
 def get_like_count_for_all_projects(request):
     projects_like_counts = models.LikeCount.objects.all()
     data_list = []
