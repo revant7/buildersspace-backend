@@ -44,10 +44,34 @@ urlpatterns = [
         views.update_participant_notification,
         name="update_participant_notification",
     ),  # update_participant_notification
+    # Endpoint for getting all details
+    path(
+        "get-user-details/",
+        views.get_user_details,
+        name="get_user_details",
+    ),  # getting all user details
+    # Endpoint for editing any/all details
+    path(
+        "update-all-details/",
+        views.update_all_details,
+        name="update_all_details",
+    ),
     # Endpoint for casting the attendee's Vote
     path(
         "cast-attendee-vote/", views.cast_vote, name="cast_vote"
     ),  # casting the attendee's Vote
     # Endpoint for doing like
     path("post-like/", views.do_like, name="do_like"),  # doing like
+    # Endpoint for getting vote count for all projects
+    path(
+        "get-vote-count-for-all-projects/",
+        views.get_vote_count_for_all_projects,
+        name="get_vote_count_for_all_projects",
+    ),  # getting vote count for all projects
+    # Endpoint for getting like count for all projects
+    path(
+        "get-like-count-for-all-projects/",
+        views.get_like_count_for_all_projects,
+        name="get_like_count_for_all_projects",
+    ),  # getting like count for all projects
 ]

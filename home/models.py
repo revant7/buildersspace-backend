@@ -123,6 +123,8 @@ class Participant(models.Model):
         default="default/Profile.png",
     )
 
+    about = models.TextField(null=True, blank=True)
+
     def __str__(self):
         return f"Participant: {self.user.first_name} - {self.user.email}"
 
@@ -170,8 +172,8 @@ class Vote(models.Model):
         on_delete=models.CASCADE,
         related_name="project_votes",
     )
-    attendee = models.ForeignKey(
-        Attendee, on_delete=models.CASCADE, related_name="attendees"
+    attendee = models.OneToOneField(
+        Attendee, on_delete=models.CASCADE, related_name="voted_project"
     )
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -212,6 +214,8 @@ class Like(models.Model):
         return f"Unknown user likes {self.project.project_idea_title}"
 
     class Meta:
+        unique_together = ("attendee", "project")
+        unique_together = ("participant", "project")
         verbose_name = "Like"
         verbose_name_plural = "Likes"
 

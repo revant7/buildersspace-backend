@@ -91,6 +91,11 @@ SIMPLE_JWT = {
 
 AUTH_USER_MODEL = "home.Admin"
 
+AUTHENTICATION_BACKENDS = [
+    "home.authentication.UserBackend",  # Custom backend for User model
+    "django.contrib.auth.backends.ModelBackend",  # Default Django backend (for Admin users)
+]
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
