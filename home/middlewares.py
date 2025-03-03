@@ -8,6 +8,10 @@ class ClientCredentialsOrBearerMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+
+        if request.path.startswith("/admin/"):
+            return self.get_response(request)
+
         auth_header = request.META.get("HTTP_AUTHORIZATION")
 
         if not auth_header:
