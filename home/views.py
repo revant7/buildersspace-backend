@@ -487,3 +487,9 @@ def get_like_count_for_all_projects(request):
         data_list.append(temp_dict)
 
     return JsonResponse(data_list, safe=False)
+
+
+@api_view(["GET"])
+@permission_classes([permissions.AllowAny])
+def void_request_for_active_state(request):
+    return JsonResponse({"response": "Hi Builder's Space Community, Revant This Side!"})

@@ -74,4 +74,10 @@ urlpatterns = [
         views.get_like_count_for_all_projects,
         name="get_like_count_for_all_projects",
     ),  # getting like count for all projects
+    # void request for keeping service active.
+    path(
+        "/void-request-for-active-state/",
+        views.void_request_for_active_state,
+        name="void_request_for_active_state",
+    ),
 ]
