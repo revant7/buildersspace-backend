@@ -10,13 +10,11 @@ class ClientCredentialsOrBearerMiddleware:
     def __call__(self, request):
 
         if request.path.startswith("/api/"):
-
+            auth_header = request.META.get("HTTP_AUTHORIZATION")
             if not auth_header:
                 return HttpResponseForbidden(
-                    "DANGER!!! Client Credentials Not Provided. UNAUTHORISED ACCESS DETECTED!!! Request Aborted."
+                    "Client Credentials Are Not Provided. Request Aborted."
                 )
-
-            auth_header = request.META.get("HTTP_AUTHORIZATION")
 
             try:
                 auth_type, auth_data = auth_header.split(" ", 1)
