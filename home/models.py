@@ -113,17 +113,16 @@ class Participant(models.Model):
         ("Slytherin", "Slytherin"),
         ("Phoenix", "Phoenix"),
     ]
-
+    domain = models.CharField(max_length=256, null=True, blank=True)
+    designation = models.CharField(max_length=256, null=True, blank=True)
     house = models.CharField(max_length=32, choices=OPTION_CHOICES)
+    location = models.TextField(null=True, blank=True)
+    about = models.TextField(null=True, blank=True)
 
     profile_picture = models.ImageField(
         upload_to="participant/profile/",
-        blank=True,
-        null=True,
         default="default/Profile.png",
     )
-
-    about = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f"Participant: {self.user.first_name} - {self.user.email}"
@@ -252,10 +251,11 @@ class SocialLinks(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name="social_links", primary_key=True
     )
-    instagram = models.URLField(blank=True, null=True)
-    github = models.URLField(blank=True, null=True)
-    twitter = models.URLField(blank=True, null=True)
-    linkedin = models.URLField(blank=True, null=True)
+    instagram = models.TextField()
+    github = models.TextField()
+    twitter = models.TextField()
+    linkedin = models.TextField()
+    commudle_profile = models.TextField()
 
     def __str__(self):
         return self.user.first_name

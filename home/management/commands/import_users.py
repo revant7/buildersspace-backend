@@ -2,6 +2,7 @@ import csv
 from django.core.management.base import BaseCommand
 from home import models
 from django.core.files import File
+from ... import utils
 
 User = models.User
 
@@ -20,10 +21,29 @@ class Command(BaseCommand):
                 reader = csv.DictReader(csvfile)
                 for row in reader:
                     email = row.get("email")
-                    first_name = row.get("first_name")
-                    last_name = row.get("last_name", "")
+                    name = row.get("name").split()
+                    if len(name) >= 2:
+                        first_name = name[0]
+                        last_name = " ".join(name[1:])
+                    elif len(name) == 1:
+                        first_name = name[0]
+                        last_name = None
+                    else:
+                        first_name = utils.generate_random_password()
+                        last_name = None
                     mobile_number = row.get("mobile_number")
-                    house = row.get("house")
+                    domain = row.get("domain")
+                    if domain == "Tech":
+                        house = "Gryffindor"
+                    if domain == "Creative Arts":
+                        house = "Hufflepuff"
+                    if domain == "Robotics":
+                        house = "Ravenclaw"
+                    if domain == "Entrepreneurship":
+                        house = "Phoenix"
+                    if domain == "Entertainment":
+                        house = "Slytherin"
+
                     project_idea_title = row.get("project_idea_title")
                     project_idea_description = row.get("project_idea_description")
                     project_experience = row.get("project_experience")
@@ -31,6 +51,28 @@ class Command(BaseCommand):
                     profile_picture_path = row.get(
                         "profile_picture_path", None
                     )  # Path to the image if you have it.
+                    about = row.get("about")
+                    commudle_profile = row.get("commudle_profile")
+                    social_media_links = row.get("social_media_links").split(",")
+                    linkedin = None
+                    instagram = None
+                    twitter = None
+                    github = None
+                    if len(social_media_links) > 0:
+
+                        for i in social_media_links:
+                            i = i.strip()
+                            if "linkedin" in i:
+                                linkedin = i
+
+                            elif "github" in i:
+                                github = i
+
+                            elif "twitter" in i:
+                                twitter = i
+
+                            elif ("instagram" in i) or ("facebook" in i):
+                                instagram = i
 
                     if not email or not first_name or not mobile_number or not house:
                         self.stdout.write(
@@ -66,7 +108,7 @@ class Command(BaseCommand):
 
                         participant, participant_created = (
                             models.Participant.objects.get_or_create(
-                                user=user, defaults={"house": house}
+                                user=user, defaults={"house": house}, about=about
                             )
                         )
 
