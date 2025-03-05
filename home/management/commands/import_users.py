@@ -21,7 +21,7 @@ class Command(BaseCommand):
                 reader = csv.DictReader(csvfile)
                 for row in reader:
                     email = row.get("email")
-                    name = row.get("name").split()
+                    name = row.get("name", "").split()
                     if len(name) >= 2:
                         first_name = name[0]
                         last_name = " ".join(name[1:])
@@ -31,47 +31,43 @@ class Command(BaseCommand):
                     else:
                         first_name = utils.generate_random_password()
                         last_name = None
-                    mobile_number = row.get("mobile_number")
+                    mobile_number = row.get("phone_number")
                     domain = row.get("domain")
+                    house = None
                     if domain == "Tech":
                         house = "Gryffindor"
-                    if domain == "Creative Arts":
+                    elif domain == "Creative Arts":
                         house = "Hufflepuff"
-                    if domain == "Robotics":
+                    elif domain == "Robotics":
                         house = "Ravenclaw"
-                    if domain == "Entrepreneurship":
+                    elif domain == "Entrepreneurship":
                         house = "Phoenix"
-                    if domain == "Entertainment":
+                    elif domain == "Entertainment":
                         house = "Slytherin"
 
-                    project_idea_title = row.get("project_idea_title")
+                    project_idea_title = row.get("project_idea")
                     project_idea_description = row.get("project_idea_description")
                     project_experience = row.get("project_experience")
                     project_video_link = row.get("project_video_link")
-                    profile_picture_path = row.get(
-                        "profile_picture_path", None
-                    )  # Path to the image if you have it.
                     about = row.get("about")
                     commudle_profile = row.get("commudle_profile")
-                    social_media_links = row.get("social_media_links").split(",")
-                    linkedin = None
-                    instagram = None
-                    twitter = None
-                    github = None
+                    social_media_links = row.get("social_media_links", "").split(",")
+                    designation = row.get("designation")
+                    location = row.get("location")
+                    linkedin = ""
+                    instagram = ""
+                    twitter = ""
+                    github = ""
                     if len(social_media_links) > 0:
-
                         for i in social_media_links:
                             i = i.strip()
                             if "linkedin" in i:
                                 linkedin = i
-
                             elif "github" in i:
                                 github = i
-
-                            elif "twitter" in i:
+                            elif "x.com" in i:
                                 twitter = i
-
-                            elif ("instagram" in i) or ("facebook" in i):
+                            elif "instagram" in i or "facebook" in i:
                                 instagram = i
 
                     if not email or not first_name or not mobile_number or not house:
@@ -95,88 +91,51 @@ class Command(BaseCommand):
                         )
 
                         if created:
-                            password = User.objects.make_random_password()
+                            password = utils.generate_random_password()
                             user.set_password(password)
                             user.save()
                             self.stdout.write(
                                 self.style.SUCCESS(f"Created user: {email}")
                             )
-                        else:
-                            self.stdout.write(
-                                self.style.WARNING(f"User already exists: {email}")
-                            )
 
-                        participant, participant_created = (
-                            models.Participant.objects.get_or_create(
-                                user=user, defaults={"house": house}, about=about
-                            )
+                        participant = models.Participant.objects.get(user=user)
+
+                        participant.about = about
+                        participant.house = house
+                        participant.domain = domain
+                        participant.designation = designation
+                        participant.location = location
+
+                        participant.save()
+
+                        project = models.Project.objects.get(participant=participant)
+
+                        project.project_idea_title = project_idea_title
+                        project.project_idea_description = project_idea_description
+                        project.project_experience = project_experience
+                        project.project_video_link = project_video_link
+                        project.save()
+
+                        social_links_obj = models.SocialLinks.objects.get(user=user)
+                        social_links_obj.github = github
+                        social_links_obj.twitter = twitter
+                        social_links_obj.instagram = instagram
+                        social_links_obj.linkedin = linkedin
+                        social_links_obj.commudle_profile = commudle_profile
+                        social_links_obj.save()
+
+                    except models.Participant.DoesNotExist:
+                        self.stdout.write(
+                            self.style.WARNING(f"Participant does not exist: {email}")
                         )
-
-                        if participant_created:
-                            self.stdout.write(
-                                self.style.SUCCESS(f"Created participant: {email}")
-                            )
-
-                            if profile_picture_path:
-                                try:
-                                    with open(profile_picture_path, "rb") as img_file:
-                                        participant.profile_picture.save(
-                                            f"{user.email}.jpg",
-                                            File(img_file),
-                                            save=True,
-                                        )
-                                        self.stdout.write(
-                                            self.style.SUCCESS(
-                                                f"Profile picture added for: {email}"
-                                            )
-                                        )
-                                except FileNotFoundError:
-                                    self.stdout.write(
-                                        self.style.WARNING(
-                                            f"Profile picture not found: {profile_picture_path} for {email}"
-                                        )
-                                    )
-                            else:
-                                self.stdout.write(
-                                    self.style.WARNING(
-                                        f"No profile picture path provided for: {email}"
-                                    )
-                                )
-
-                            project, project_created = (
-                                models.Project.objects.get_or_create(
-                                    participant=participant,
-                                    defaults={
-                                        "project_idea_title": project_idea_title,
-                                        "project_idea_description": project_idea_description,
-                                        "project_experience": project_experience,
-                                        "project_video_link": project_video_link,
-                                    },
-                                )
-                            )
-                            if project_created:
-                                self.stdout.write(
-                                    self.style.SUCCESS(f"Created project: {email}")
-                                )
-                                models.VoteCount(project=project).save()
-                                models.LikeCount(project=project).save()
-                                models.SocialLinks(user=user).save()
-                                models.ParticipantNotification(
-                                    participant=participant
-                                ).save()
-                            else:
-                                self.stdout.write(
-                                    self.style.WARNING(
-                                        f"Project already exists for: {email}"
-                                    )
-                                )
-                        else:
-                            self.stdout.write(
-                                self.style.WARNING(
-                                    f"Participant already exists: {email}"
-                                )
-                            )
-
+                    except models.Project.DoesNotExist:
+                        self.stdout.write(
+                            self.style.WARNING(f"Project does not exist: {email}")
+                        )
+                    except models.SocialLinks.DoesNotExist:
+                        self.stdout.write(
+                            self.style.WARNING(f"Social links does not exist: {email}")
+                        )
                     except Exception as e:
                         self.stdout.write(
                             self.style.ERROR(f"Error processing row for {email}: {e}")
