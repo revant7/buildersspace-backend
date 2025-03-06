@@ -133,7 +133,7 @@ DATABASES = {
     },
 }
 
-DATABASE_ROUTERS = ["builderspace.routers.MainRouter"]
+#DATABASE_ROUTERS = ["builderspace.routers.MainRouter"]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

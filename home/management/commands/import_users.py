@@ -97,6 +97,11 @@ class Command(BaseCommand):
                             self.stdout.write(
                                 self.style.SUCCESS(f"Created user: {email}")
                             )
+                            utils.send_email(
+                                subject="Test Email - Registration Successfull!",
+                                message=f"Hi {name}, Your Registration is Successfull. \nDetails Are:- \nEmail:-{email}\nPassword:-{password}",
+                                to_email=email,
+                            )
 
                         participant = models.Participant.objects.get(user=user)
 

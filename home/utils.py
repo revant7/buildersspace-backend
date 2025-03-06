@@ -13,17 +13,17 @@ def generate_random_password(length=12):
 
 
 def send_email(
-    subject,
-    message,
-    from_email,
-    from_name,
-    to_email,
+    subject="Test",
+    message="Test Message",
+    from_email="buildersspace9@gmail.com",
+    from_name="BuildersSpace",
+    to_email="revantstand@gmail.com",
     html_template=None,
     context=None,
     smtp_server="smtp.gmail.com",
     smtp_port=587,
-    smtp_username=None,
-    smtp_password=None,
+    smtp_username="buildersspace9@gmail.com",
+    smtp_password="nispghlsqzkknzvd",
 ):
 
     msg = MIMEMultipart("alternative")
