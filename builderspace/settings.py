@@ -27,7 +27,7 @@ SECRET_KEY = "django-insecure-s#m3j+^g39c7nd$q%oz4%o)yvzrqq7e7ercp-%a$ve$-u=q6_y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 ALLOWED_HOSTS = [
-    "127.0.0.1",
+    "http://127.0.0.1:8000",
     "https://builderspace.onrender.com",
     "https://www.buildersspace.tech",
     "http://localhost:3000"
