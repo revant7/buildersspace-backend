@@ -490,6 +490,6 @@ def get_like_count_for_all_projects(request):
 
 
 @api_view(["GET"])
-@permission_classes([permissions.AllowAny])
+@permission_classes([IsTokenAuthenticated])
 def void_request_for_active_state(request):
     return JsonResponse({"response": "Just a normal checkout run!"})

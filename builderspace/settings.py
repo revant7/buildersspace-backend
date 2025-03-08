@@ -123,7 +123,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     },
-    "backup": {
+    "main": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.environ.get("BS_DB_NAME"),
         "USER": os.environ.get("BS_DB_USER"),
@@ -133,6 +133,7 @@ DATABASES = {
     },
 }
 
+#DATABASE_ROUTERS = ["builderspace.routers.MainRouter"]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
