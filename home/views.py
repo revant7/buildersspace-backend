@@ -17,7 +17,7 @@ User = models.User
 
 
 @api_view(["POST"])
-@permission_classes([IsTokenAuthenticated])
+@permission_classes([permissions.AllowAny])
 def register_user(request):
     email = request.data.get("email")
     password = request.data.get("password")
@@ -108,7 +108,7 @@ def register_user(request):
 
 
 @api_view(["POST"])
-@permission_classes([IsTokenAuthenticated])
+@permission_classes([permissions.AllowAny])
 def custom_token_obtain_view(request):
     email = request.data.get("email")
     password = request.data.get("password")
@@ -142,11 +142,12 @@ def custom_token_obtain_view(request):
 
 
 @api_view(["POST"])
-@permission_classes([IsTokenAuthenticated])
+@permission_classes([permissions.AllowAny])
 def cast_vote(request):
     user = request.user
     if user.is_attendee:
-        participant = request.participant
+        participant = request.GET.get("participant")
+        participant = models.Participant.get(participant)
         project = participant.project
         attendee = user.attendee
         already_voted = models.Vote.get(attendee=attendee)
