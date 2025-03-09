@@ -30,15 +30,9 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "builderspace.onrender.com",
     "buildersspace.tech",
-    "localhost"
+    "localhost",
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Your development frontend
-    "https://builderspace.onrender.com",  # Your production frontend (if applicable)
-    "https://builderspace.tech", # Add also this domain
-    # Add any other origins that need to access your API
-]
 
 # Application definition
 
@@ -55,9 +49,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "home.middlewares.ClientCredentialsOrBearerMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -67,9 +61,12 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
-
 ROOT_URLCONF = "builderspace.urls"
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "https://builderspace.tech",
+]
+
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -139,7 +136,7 @@ DATABASES = {
     },
 }
 
-#DATABASE_ROUTERS = ["builderspace.routers.MainRouter"]
+# DATABASE_ROUTERS = ["builderspace.routers.MainRouter"]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
