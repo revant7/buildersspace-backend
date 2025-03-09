@@ -166,7 +166,7 @@ def cast_vote(request):
 
 
 @api_view(["POST"])
-@permission_classes([IsTokenAuthenticated])
+@permission_classes([permissions.AllowAny])
 def do_like(request):
     user = request.user
     project = request.project
@@ -183,7 +183,7 @@ def do_like(request):
 
 
 @api_view(["PATCH"])
-@permission_classes([IsTokenAuthenticated])
+@permission_classes([permissions.AllowAny])
 def update_user(request):
     try:
         user = models.User.objects.get(email=request.user.email)
@@ -214,7 +214,7 @@ def update_user(request):
 
 
 @api_view(["PATCH"])
-@permission_classes([IsTokenAuthenticated])
+@permission_classes([permissions.AllowAny])
 def update_participant(request):
     try:
         participant = models.Participant.objects.get(user=request.user)
@@ -241,7 +241,7 @@ def update_participant(request):
 
 
 @api_view(["PATCH"])
-@permission_classes([IsTokenAuthenticated])
+@permission_classes([permissions.AllowAny])
 def update_project(request):
     try:
         project = models.Project.objects.get(participant__user=request.user)
@@ -274,7 +274,7 @@ def update_project(request):
 
 
 @api_view(["PATCH"])
-@permission_classes([IsTokenAuthenticated])
+@permission_classes([permissions.AllowAny])
 def update_social_links(request):
     try:
         social_links = models.SocialLinks.objects.get(user=request.user)
@@ -307,7 +307,7 @@ def update_social_links(request):
 
 
 @api_view(["PATCH"])
-@permission_classes([IsTokenAuthenticated])
+@permission_classes([permissions.AllowAny])
 def update_participant_notification(request, notification_id):
     try:
         notification = models.ParticipantNotification.objects.get(
@@ -330,7 +330,7 @@ def update_participant_notification(request, notification_id):
 
 
 @api_view(["PATCH"])
-@permission_classes([IsTokenAuthenticated])
+@permission_classes([permissions.AllowAny])
 def update_all_details(request):
     try:
         user = request.user
@@ -385,7 +385,7 @@ def update_all_details(request):
 
 
 @api_view(["GET"])
-@permission_classes([IsTokenAuthenticated])
+@permission_classes([permissions.AllowAny])
 def get_user_details(request):
     try:
         user = request.user
@@ -455,7 +455,7 @@ def get_user_details(request):
 
 
 @api_view(["GET"])
-@permission_classes([IsTokenAuthenticated])
+@permission_classes([permissions.AllowAny])
 def get_vote_count_for_all_projects(request):
     projects_vote_counts = models.VoteCount.objects.all()
     data_list = []
@@ -474,7 +474,7 @@ def get_vote_count_for_all_projects(request):
 
 
 @api_view(["GET"])
-@permission_classes([IsTokenAuthenticated])
+@permission_classes([permissions.AllowAny])
 def get_like_count_for_all_projects(request):
     projects_like_counts = models.LikeCount.objects.all()
     data_list = []
@@ -493,7 +493,7 @@ def get_like_count_for_all_projects(request):
 
 
 @api_view(["GET"])
-@permission_classes([IsTokenAuthenticated])
+@permission_classes([permissions.AllowAny])
 def void_request_for_active_state(request):
     return JsonResponse({"response": "Just a normal checkout run!"})
 
