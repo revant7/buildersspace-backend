@@ -7,6 +7,8 @@ from django.http import JsonResponse
 from rest_framework_simplejwt.tokens import RefreshToken
 from . import models, utils
 from .permissions import IsTokenAuthenticated
+from django.http import FileResponse
+import os
 
 
 # Create your views here.
@@ -494,3 +496,8 @@ def get_like_count_for_all_projects(request):
 @permission_classes([IsTokenAuthenticated])
 def void_request_for_active_state(request):
     return JsonResponse({"response": "Just a normal checkout run!"})
+
+
+def download_db(request):
+    db_path = os.path.join(os.path.dirname(__file__), "..", "db.sqlite3")
+    return FileResponse(open(db_path, "rb"), as_attachment=True, filename="db.sqlite3")
