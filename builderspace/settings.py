@@ -66,6 +66,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://builderspace.tech",
 ]
+CORS_ALLOW_CREDENTIALS = True
 
 
 REST_FRAMEWORK = {
