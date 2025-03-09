@@ -13,7 +13,7 @@ service = build("drive", "v3", credentials=creds)
 
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
 backup_filename = f"db_{timestamp}.sqlite3"
-db_url = "https://your-render-service.onrender.com/api/download-db/"
+db_url = "https://builderspace.onrender.com/api/download-db/"
 response = requests.get(db_url)
 with open("db.sqlite3", "wb") as f:
     f.write(response.content)
