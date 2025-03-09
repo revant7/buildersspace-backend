@@ -64,7 +64,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = "builderspace.urls"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://builderspace.tech",
+    "https://www.buildersspace.tech",
 ]
 CORS_ALLOW_CREDENTIALS = True
 
