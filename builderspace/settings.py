@@ -32,6 +32,7 @@ ALLOWED_HOSTS = [
     "buildersspace.tech",
     "localhost"
 ]
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Your development frontend
     "https://builderspace.onrender.com",  # Your production frontend (if applicable)
