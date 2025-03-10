@@ -6,6 +6,7 @@ from django.contrib.auth.models import (
 )
 from django.utils import timezone
 from datetime import timedelta
+from django.conf import settings
 
 # Create your models here.
 
@@ -120,6 +121,12 @@ class Participant(models.Model):
 
     def __str__(self):
         return f"Participant: {self.user.first_name} - {self.user.email}"
+
+    def get_profile_picture_url(self):
+        if self.profile_picture:
+            return settings.MEDIA_URL + self.profile_picture.url
+        else:
+            return settings.MEDIA_URL + self.profile_picture.field.default
 
     class Meta:
         verbose_name = "Participant"

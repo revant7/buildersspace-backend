@@ -171,18 +171,25 @@ def custom_token_obtain_view(request):
 def cast_vote(request):
     user = request.user
     if user.is_attendee:
-        participant = request.GET.get("participant")
-        participant = models.Participant.get(participant)
-        project = participant.project
-        attendee = user.attendee
-        already_voted = models.Vote.get(attendee=attendee)
-        if already_voted:
-            return JsonResponse({"status": "User Already Voted."})
-        vote = models.Vote.objects.create(attendee=user.attendee, project=project)
-        vote.save()
-        vote_count = models.VoteCount.objects.get(project=project)
-        vote_count.count += 1
-        vote_count.save()
+        participant_email = request.data.get("participant_email")
+        participant = models.Participant.objects.get(
+            user=models.User.objects.get(email=participant_email)
+        )
+        project = participant.participant_project
+        attendee = user.attendee_profile
+        try:
+            already_voted = models.Vote.objects.get(attendee=attendee)
+            if already_voted:
+                return JsonResponse({"status": "User Already Voted."})
+        except models.Vote.DoesNotExist:
+            vote = models.Vote.objects.create(
+                attendee=user.attendee_profile, project=project
+            )
+            vote.save()
+            vote_count = models.VoteCount.objects.get(project=project)
+            vote_count.count += 1
+            vote_count.save()
+            return JsonResponse({"status": "User Voted Successfully."})
 
 
 # post like
@@ -463,7 +470,7 @@ def get_user_details(request):
                 "last_name": user.last_name,
                 "date_joined": user.date_joined,
                 "house": participant.house,
-                # "profile_picture": participant.profile_picture,
+                "profile_picture": participant.get_profile_picture_url(),
                 "about": participant.about,
                 "project_idea_title": participant.participant_project.project_idea_title,
                 "project_idea_description": participant.participant_project.project_idea_description,
@@ -471,9 +478,9 @@ def get_user_details(request):
                 "project_video_link": participant.participant_project.project_video_link,
                 "votes": project.vote_count.count,
                 "likes": project.like_count.count,
-                # "liked_projects": models.Like.objects.filter(
-                #   participant=participant
-                # ).values(),
+                "liked_projects": list(
+                    models.Like.objects.filter(participant=participant).values()
+                ),
                 "instagram": social_links.instagram,
                 "github": social_links.github,
                 "twitter": social_links.twitter,

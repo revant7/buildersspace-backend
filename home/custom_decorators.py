@@ -11,8 +11,6 @@ def credentials_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
         client_id = request.GET.get("CLIENT_ID")
         client_secret = request.GET.get("CLIENT_SECRET")
-        print(request.headers)
-        print(client_id, "\n", client_secret)
         if (not client_id) or (not client_secret):
             return JsonResponse(
                 {"error": "CLIENT_ID OR CLIENT_SECRET IS MISSING"}, status=403
