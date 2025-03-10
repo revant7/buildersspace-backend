@@ -18,7 +18,7 @@ response = requests.get(db_url)
 with open("db.sqlite3", "wb") as f:
     f.write(response.content)
 
-# Upload to Google Drive
+
 file_metadata = {"name": backup_filename, "parents": [DRIVE_FOLDER_ID]}
 media = MediaFileUpload(backup_filename, mimetype="application/x-sqlite3")
 file = (

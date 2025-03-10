@@ -1,14 +1,20 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import (
+    api_view,
+    permission_classes,
+    authentication_classes,
+)
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from django.http import JsonResponse
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from . import models, utils
 from .permissions import IsTokenAuthenticated
 from django.http import FileResponse
 import os
+from .authentication import CustomJWTAuthentication
 
 
 # Create your views here.
@@ -50,6 +56,13 @@ def register_user(request):
         is_participant=is_participant,
         is_attendee=is_attendee,
     )
+    models.SocialLinks(
+        user=user,
+        instagram=request.data.get("instagram"),
+        github=request.data.get("github"),
+        twitter=request.data.get("twitter"),
+        linkedin=request.data.get("linkedin"),
+    ).save()
 
     if user.is_participant:
         participant_house = request.data.get("house")
@@ -74,13 +87,7 @@ def register_user(request):
 
         models.VoteCount(project=project).save()
         models.LikeCount(project=project).save()
-        models.SocialLinks(
-            user=user,
-            instagram=request.data.get("instagram"),
-            github=request.data.get("github"),
-            twitter=request.data.get("twitter"),
-            linkedin=request.data.get("linkedin"),
-        ).save()
+
         models.ParticipantNotification(
             participant=participant,
             notification_title=request.data.get("notification_title"),
@@ -120,7 +127,19 @@ def custom_token_obtain_view(request):
             {"error": "Both email and password are required."}, status=400
         )
 
-    user = authenticate(email=email, password=password)
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response(
+            {"error": "Invalid email or password (User Does Not Exist)"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if not user.check_password(password):
+        return Response(
+            {"error": "Invalid email or password"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
     if not user:
         return JsonResponse({"error": "Invalid email or password."}, status=401)
 
@@ -144,7 +163,9 @@ def custom_token_obtain_view(request):
 
 
 @api_view(["POST"])
-@permission_classes([permissions.AllowAny])
+# @permission_classes([permissions.AllowAny])
+@authentication_classes([JWTAuthentication])
+@permission_classes([permissions.IsAuthenticated])
 def cast_vote(request):
     user = request.user
     if user.is_attendee:
@@ -166,7 +187,9 @@ def cast_vote(request):
 
 
 @api_view(["POST"])
-@permission_classes([permissions.AllowAny])
+# @permission_classes([permissions.AllowAny])
+@authentication_classes([JWTAuthentication])
+@permission_classes([permissions.IsAuthenticated])
 def do_like(request):
     user = request.user
     project = request.project
@@ -183,7 +206,9 @@ def do_like(request):
 
 
 @api_view(["PATCH"])
-@permission_classes([permissions.AllowAny])
+# @permission_classes([permissions.AllowAny])
+@authentication_classes([JWTAuthentication])
+@permission_classes([permissions.IsAuthenticated])
 def update_user(request):
     try:
         user = models.User.objects.get(email=request.user.email)
@@ -214,7 +239,9 @@ def update_user(request):
 
 
 @api_view(["PATCH"])
-@permission_classes([permissions.AllowAny])
+# @permission_classes([permissions.AllowAny])
+@authentication_classes([JWTAuthentication])
+@permission_classes([permissions.IsAuthenticated])
 def update_participant(request):
     try:
         participant = models.Participant.objects.get(user=request.user)
@@ -241,7 +268,9 @@ def update_participant(request):
 
 
 @api_view(["PATCH"])
-@permission_classes([permissions.AllowAny])
+# @permission_classes([permissions.AllowAny])
+@authentication_classes([JWTAuthentication])
+@permission_classes([permissions.IsAuthenticated])
 def update_project(request):
     try:
         project = models.Project.objects.get(participant__user=request.user)
@@ -274,7 +303,8 @@ def update_project(request):
 
 
 @api_view(["PATCH"])
-@permission_classes([permissions.AllowAny])
+@authentication_classes([JWTAuthentication])
+@permission_classes([permissions.IsAuthenticated])
 def update_social_links(request):
     try:
         social_links = models.SocialLinks.objects.get(user=request.user)
@@ -307,7 +337,8 @@ def update_social_links(request):
 
 
 @api_view(["PATCH"])
-@permission_classes([permissions.AllowAny])
+@authentication_classes([JWTAuthentication])
+@permission_classes([permissions.IsAuthenticated])
 def update_participant_notification(request, notification_id):
     try:
         notification = models.ParticipantNotification.objects.get(
@@ -330,7 +361,8 @@ def update_participant_notification(request, notification_id):
 
 
 @api_view(["PATCH"])
-@permission_classes([permissions.AllowAny])
+@authentication_classes([JWTAuthentication])
+@permission_classes([permissions.IsAuthenticated])
 def update_all_details(request):
     try:
         user = request.user
@@ -385,10 +417,12 @@ def update_all_details(request):
 
 
 @api_view(["GET"])
-@permission_classes([permissions.AllowAny])
+@authentication_classes([CustomJWTAuthentication])
+@permission_classes([permissions.IsAuthenticated])
 def get_user_details(request):
     try:
         user = request.user
+        print(user)
         social_links = user.social_links
 
     except models.ParticipantNotification.DoesNotExist:
@@ -398,7 +432,7 @@ def get_user_details(request):
         )
     if user.is_attendee:
         try:
-            attendee = user.attendee
+            attendee = user.attendee_profile
         except models.ParticipantNotification.DoesNotExist:
             return Response(
                 {"error": "Attendee not found."}, status=status.HTTP_404_NOT_FOUND
@@ -409,10 +443,6 @@ def get_user_details(request):
                 "first_name": user.first_name,
                 "last_name": user.last_name,
                 "date_joined": user.date_joined,
-                "voted_project": attendee.voted_project.project.__dict__,
-                "liked_projects": models.Like.objects.filter(
-                    attendee=attendee
-                ).values(),
                 "instagram": social_links.instagram,
                 "github": social_links.github,
                 "twitter": social_links.twitter,
@@ -435,17 +465,17 @@ def get_user_details(request):
                 "last_name": user.last_name,
                 "date_joined": user.date_joined,
                 "house": participant.house,
-                "profile_picture": participant.profile_picture,
+                # "profile_picture": participant.profile_picture,
                 "about": participant.about,
-                "project_idea_title": participant.project_idea_title,
-                "project_idea_description": participant.project_idea_description,
-                "project_experience": participant.project_experience,
-                "project_video_link": participant.project_video_link,
+                "project_idea_title": participant.participant_project.project_idea_title,
+                "project_idea_description": participant.participant_project.project_idea_description,
+                "project_experience": participant.participant_project.project_experience,
+                "project_video_link": participant.participant_project.project_video_link,
                 "votes": project.vote_count.count,
                 "likes": project.like_count.count,
-                "liked_projects": models.Like.objects.filter(
-                    participant=participant
-                ).values(),
+                # "liked_projects": models.Like.objects.filter(
+                #   participant=participant
+                # ).values(),
                 "instagram": social_links.instagram,
                 "github": social_links.github,
                 "twitter": social_links.twitter,
