@@ -536,3 +536,7 @@ def void_request_for_active_state(request):
 def download_db(request):
     db_path = os.path.join(os.path.dirname(__file__), "..", "db.sqlite3")
     return FileResponse(open(db_path, "rb"), as_attachment=True, filename="db.sqlite3")
+
+
+# def sample(request):
+#     return render(request, "emails/mail_template.html")

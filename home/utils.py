@@ -13,8 +13,8 @@ def generate_random_password(length=12):
 
 
 def send_email(
-    subject="Test",
-    message="Test Message",
+    subject=None,
+    message="",
     from_email="buildersspace9@gmail.com",
     from_name="BuildersSpace",
     to_email="revantstand@gmail.com",

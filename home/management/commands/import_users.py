@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand
 from home import models
 from django.core.files import File
 from ... import utils
+from datetime import datetime
 
 User = models.User
 
@@ -22,6 +23,9 @@ class Command(BaseCommand):
                 for row in reader:
                     email = row.get("email")
                     name = row.get("name", "").split()
+                    # date_registered = datetime.strptime(
+                    #     row.get("date_registered"), "%d-%m-%Y %H:%M"
+                    # )
                     if len(name) >= 2:
                         first_name = name[0]
                         last_name = " ".join(name[1:])
@@ -87,6 +91,7 @@ class Command(BaseCommand):
                                 "mobile_number": mobile_number,
                                 "is_participant": True,
                                 "is_attendee": False,
+                                # "date_registered": date_registered,
                             },
                         )
 
@@ -97,11 +102,17 @@ class Command(BaseCommand):
                             self.stdout.write(
                                 self.style.SUCCESS(f"Created user: {email}")
                             )
-                            # utils.send_email(
-                            #     subject="Test Email - Registration Successfull!",
-                            #     message=f"Hi {name}, Your Registration is Successfull. \nDetails Are:- \nEmail:-{email}\nPassword:-{password}",
-                            #     to_email=email,
-                            # )
+                            utils.send_email(
+                                subject="Welcome to Nights S1",
+                                message="",
+                                to_email=email,
+                                html_template="emails/mail_template.html",
+                                context={
+                                    "name": row.get("name"),
+                                    "email": email,
+                                    "password": password,
+                                },
+                            )
 
                         participant = models.Participant.objects.get(user=user)
 
