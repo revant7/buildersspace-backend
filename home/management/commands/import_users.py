@@ -31,7 +31,7 @@ class Command(BaseCommand):
                     else:
                         first_name = utils.generate_random_password()
                         last_name = None
-                    mobile_number = row.get("phone_number")
+                    mobile_number = row.get("mobile_number")
                     domain = row.get("domain")
                     house = None
                     if domain == "Tech":
@@ -42,7 +42,7 @@ class Command(BaseCommand):
                         house = "Ravenclaw"
                     elif domain == "Entrepreneurship":
                         house = "Phoenix"
-                    elif domain == "Entertainment":
+                    elif (domain == "Entertainment") or (domain.strip() == "Other"):
                         house = "Slytherin"
 
                     project_idea_title = row.get("project_idea")
@@ -97,11 +97,11 @@ class Command(BaseCommand):
                             self.stdout.write(
                                 self.style.SUCCESS(f"Created user: {email}")
                             )
-                            utils.send_email(
-                                subject="Test Email - Registration Successfull!",
-                                message=f"Hi {name}, Your Registration is Successfull. \nDetails Are:- \nEmail:-{email}\nPassword:-{password}",
-                                to_email=email,
-                            )
+                            # utils.send_email(
+                            #     subject="Test Email - Registration Successfull!",
+                            #     message=f"Hi {name}, Your Registration is Successfull. \nDetails Are:- \nEmail:-{email}\nPassword:-{password}",
+                            #     to_email=email,
+                            # )
 
                         participant = models.Participant.objects.get(user=user)
 

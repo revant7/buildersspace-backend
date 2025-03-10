@@ -78,6 +78,7 @@ class User(AbstractBaseUser):
     is_participant = models.BooleanField(default=False)
     is_attendee = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    date_registered = models.DateTimeField(null=True, blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
 
     objects = UserManager()
