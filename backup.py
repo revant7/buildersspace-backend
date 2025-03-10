@@ -3,7 +3,7 @@ from googleapiclient.http import MediaFileUpload
 from google.oauth2.service_account import Credentials
 import requests
 import datetime
-import subprocess
+import shutil
 
 DRIVE_FOLDER_ID = "1LQPQi95MXosBrXD1MLddMoo5gtVYVn2P"
 
@@ -27,3 +27,7 @@ file = (
 )
 
 print(f"Backup uploaded to Google Drive: {file.get('id')}")
+
+original_db = "db.sqlite3"
+shutil.copy(backup_filename, original_db)
+print(f"Replaced {original_db} with {backup_filename}")
