@@ -5,8 +5,8 @@ on:
     - cron: "*/5 * * * *"  # Runs every 5 minutes
   workflow_dispatch:  # Allows manual execution
 
-  permissions:
-    contents: write  # 👈 This gives GitHub Actions permission to push changes
+permissions:
+  contents: write  # 👈 This gives GitHub Actions permission to push changes
 
 jobs:
   backup:
