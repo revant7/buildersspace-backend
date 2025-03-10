@@ -15,6 +15,7 @@ from .permissions import IsTokenAuthenticated
 from django.http import FileResponse
 import os
 from .authentication import CustomJWTAuthentication
+from .custom_decorators import credentials_required
 
 
 # Create your views here.
@@ -26,6 +27,7 @@ User = models.User
 
 @api_view(["POST"])
 @permission_classes([permissions.AllowAny])
+@credentials_required
 def register_user(request):
     email = request.data.get("email")
     password = request.data.get("password")
@@ -118,6 +120,7 @@ def register_user(request):
 
 @api_view(["POST"])
 @permission_classes([permissions.AllowAny])
+@credentials_required
 def custom_token_obtain_view(request):
     email = request.data.get("email")
     password = request.data.get("password")
@@ -163,8 +166,7 @@ def custom_token_obtain_view(request):
 
 
 @api_view(["POST"])
-# @permission_classes([permissions.AllowAny])
-@authentication_classes([JWTAuthentication])
+@authentication_classes([CustomJWTAuthentication])
 @permission_classes([permissions.IsAuthenticated])
 def cast_vote(request):
     user = request.user
@@ -187,8 +189,7 @@ def cast_vote(request):
 
 
 @api_view(["POST"])
-# @permission_classes([permissions.AllowAny])
-@authentication_classes([JWTAuthentication])
+@authentication_classes([CustomJWTAuthentication])
 @permission_classes([permissions.IsAuthenticated])
 def do_like(request):
     user = request.user
@@ -206,8 +207,7 @@ def do_like(request):
 
 
 @api_view(["PATCH"])
-# @permission_classes([permissions.AllowAny])
-@authentication_classes([JWTAuthentication])
+@authentication_classes([CustomJWTAuthentication])
 @permission_classes([permissions.IsAuthenticated])
 def update_user(request):
     try:
@@ -239,8 +239,7 @@ def update_user(request):
 
 
 @api_view(["PATCH"])
-# @permission_classes([permissions.AllowAny])
-@authentication_classes([JWTAuthentication])
+@authentication_classes([CustomJWTAuthentication])
 @permission_classes([permissions.IsAuthenticated])
 def update_participant(request):
     try:
@@ -268,8 +267,7 @@ def update_participant(request):
 
 
 @api_view(["PATCH"])
-# @permission_classes([permissions.AllowAny])
-@authentication_classes([JWTAuthentication])
+@authentication_classes([CustomJWTAuthentication])
 @permission_classes([permissions.IsAuthenticated])
 def update_project(request):
     try:
@@ -303,7 +301,7 @@ def update_project(request):
 
 
 @api_view(["PATCH"])
-@authentication_classes([JWTAuthentication])
+@authentication_classes([CustomJWTAuthentication])
 @permission_classes([permissions.IsAuthenticated])
 def update_social_links(request):
     try:
@@ -337,7 +335,7 @@ def update_social_links(request):
 
 
 @api_view(["PATCH"])
-@authentication_classes([JWTAuthentication])
+@authentication_classes([CustomJWTAuthentication])
 @permission_classes([permissions.IsAuthenticated])
 def update_participant_notification(request, notification_id):
     try:
@@ -361,7 +359,7 @@ def update_participant_notification(request, notification_id):
 
 
 @api_view(["PATCH"])
-@authentication_classes([JWTAuthentication])
+@authentication_classes([CustomJWTAuthentication])
 @permission_classes([permissions.IsAuthenticated])
 def update_all_details(request):
     try:
@@ -485,7 +483,7 @@ def get_user_details(request):
 
 
 @api_view(["GET"])
-@permission_classes([permissions.AllowAny])
+@credentials_required
 def get_vote_count_for_all_projects(request):
     projects_vote_counts = models.VoteCount.objects.all()
     data_list = []
@@ -504,7 +502,7 @@ def get_vote_count_for_all_projects(request):
 
 
 @api_view(["GET"])
-@permission_classes([permissions.AllowAny])
+@credentials_required
 def get_like_count_for_all_projects(request):
     projects_like_counts = models.LikeCount.objects.all()
     data_list = []
