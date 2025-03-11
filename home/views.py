@@ -476,9 +476,9 @@ def get_user_details(request):
                 "project_idea_description": participant.participant_project.project_idea_description,
                 "project_experience": participant.participant_project.project_experience,
                 "project_video_link": participant.participant_project.project_video_link,
-                "designation": participant.participant_project.designation,
-                "domain": participant.participant_project.domain,
-                "location": participant.participant_project.location,
+                "designation": participant.designation,
+                "domain": participant.domain,
+                "location": participant.location,
                 "votes": project.vote_count.count,
                 "likes": project.like_count.count,
                 "liked_projects": list(
