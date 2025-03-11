@@ -383,6 +383,9 @@ def update_all_details(request):
 
     profile_picture = request.FILES.get("profile_picture")
     about = request.data.get("about")
+    domain = request.data.get("domain")
+    designation = request.data.get("designation")
+    location = request.data.get("location")
     project_idea_title = request.data.get("project_idea_title")
     project_idea_description = request.data.get("project_idea_description")
     project_experience = request.data.get("project_experience")
@@ -414,6 +417,12 @@ def update_all_details(request):
         participant.profile_picture = profile_picture
     if about is not None:
         participant.about = about
+    if domain is not None:
+        participant.domain = domain
+    if designation is not None:
+        participant.designation = designation
+    if location is not None:
+        participant.location = location
 
     participant.save()
     project.save()
