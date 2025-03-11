@@ -570,9 +570,7 @@ def decrypt(text, shift=7):
 
 
 def download_db(request):
-    if decrypt(request.GET.get("BUILDERSSPACE_KEY")) != os.environ.get(
-        "BUILDERSSPACE_KEY"
-    ):
+    if decrypt(request.GET.get("key")) != os.environ.get("BUILDERSSPACE_KEY"):
         return HttpResponse(
             "Unauthorised Request.", status=status.HTTP_401_UNAUTHORIZED
         )
@@ -585,9 +583,7 @@ def download_db(request):
 
 
 def download_media_folder(request):
-    if decrypt(request.GET.get("BUILDERSSPACE_KEY")) != os.environ.get(
-        "BUILDERSSPACE_KEY"
-    ):
+    if decrypt(request.GET.get("key")) != os.environ.get("BUILDERSSPACE_KEY"):
         return HttpResponse("Unauthorised Request.")
     media_root = settings.MEDIA_ROOT
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
