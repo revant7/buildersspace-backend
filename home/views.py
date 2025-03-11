@@ -12,11 +12,14 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from . import models, utils
 from .permissions import IsTokenAuthenticated
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponse
+from django.utils.text import slugify
+import zipfile
 import os
 from .authentication import CustomJWTAuthentication
 from .custom_decorators import credentials_required
-
+from django.conf import settings
+from datetime import datetime
 
 # Create your views here.
 
@@ -537,10 +540,68 @@ def void_request_for_active_state(request):
     return JsonResponse({"response": "Just a normal checkout run!"})
 
 
+def encrypt(text, shift=7):
+    encrypted_text = ""
+    for char in text:
+        if char.isalpha():
+            shift_amount = shift % 26
+            new_char = (
+                chr(ord("A") + (ord(char) - ord("A") + shift_amount) % 26)
+                if char.isupper()
+                else chr(ord("a") + (ord(char) - ord("a") + shift_amount) % 26)
+            )
+            encrypted_text += new_char
+        else:
+            encrypted_text += char
+    return encrypted_text
+
+
+def decrypt(text, shift=7):
+    return encrypt(text, -shift)
+
+
 def download_db(request):
+    if decrypt(request.GET.get("BUILDERSSPACE_KEY")) != os.environ.get(
+        "BUILDERSSPACE_KEY"
+    ):
+        return HttpResponse(
+            "Unauthorised Request.", status=status.HTTP_401_UNAUTHORIZED
+        )
     db_path = os.path.join(os.path.dirname(__file__), "..", "db.sqlite3")
     return FileResponse(open(db_path, "rb"), as_attachment=True, filename="db.sqlite3")
 
 
 # def sample(request):
 #     return render(request, "emails/mail_template.html")
+
+
+def download_media_folder(request):
+    if decrypt(request.GET.get("BUILDERSSPACE_KEY")) != os.environ.get(
+        "BUILDERSSPACE_KEY"
+    ):
+        return HttpResponse("Unauthorised Request.")
+    media_root = settings.MEDIA_ROOT
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
+    zip_filename = f"media_backup_{timestamp}.zip"
+
+    zip_path = os.path.join(settings.MEDIA_ROOT, zip_filename)
+
+    # Create ZIP file
+    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
+        for root, dirs, files in os.walk(media_root):
+            for file in files:
+                file_path = os.path.join(root, file)
+                arcname = os.path.relpath(
+                    file_path, media_root
+                )  # Relative path for zip
+                zipf.write(file_path, arcname)
+
+    # Read the ZIP file and return it as response
+    with open(zip_path, "rb") as zip_file:
+        response = HttpResponse(zip_file.read(), content_type="application/zip")
+        response["Content-Disposition"] = f'attachment; filename="{zip_filename}"'
+
+    # Optional: Remove the temporary ZIP file after sending
+    os.remove(zip_path)
+
+    return response

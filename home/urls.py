@@ -81,5 +81,10 @@ urlpatterns = [
         name="void_request_for_active_state",
     ),
     path("download-db/", views.download_db, name="download_db"),
+    path(
+        "download-media-folder/",
+        views.download_media_folder,
+        name="download_media_folder",
+    ),
     # path("sample", views.sample, name="sample"),
 ]
