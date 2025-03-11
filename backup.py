@@ -25,6 +25,7 @@ backup_media_folder = f"media_backup_{timestamp}.zip"
 db_url = "http://127.0.0.1:8000/api/download-db/"
 zip_url = "http://127.0.0.1:8000/api/download-media-folder/"
 
+api_key = "Hello"
 
 # Download database backup
 db_response = requests.get(db_url, params={"key": api_key})
