@@ -25,12 +25,6 @@ backup_media_folder = f"media_backup_{timestamp}.zip"
 db_url = "http://127.0.0.1:8000/api/download-db/"
 zip_url = "http://127.0.0.1:8000/api/download-media-folder/"
 
-# Get API key from environment variable
-api_key = os.environ.get("BUILDERSSPACE_KEY")
-
-if not api_key:
-    print("ERROR: API key is missing. Set the BUILDERSSPACE_KEY environment variable.")
-    exit(1)
 
 # Download database backup
 db_response = requests.get(db_url, params={"key": api_key})
