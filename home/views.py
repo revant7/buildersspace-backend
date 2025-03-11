@@ -570,10 +570,10 @@ def decrypt(text, shift=7):
 
 
 def download_db(request):
-    if decrypt(request.GET.get("key")) != os.environ.get("BUILDERSSPACE_KEY"):
-        return HttpResponse(
-            "Unauthorised Request.", status=status.HTTP_401_UNAUTHORIZED
-        )
+    # if decrypt(request.GET.get("key")) != os.environ.get("BUILDERSSPACE_KEY"):
+    #     return HttpResponse(
+    #         "Unauthorised Request.", status=status.HTTP_401_UNAUTHORIZED
+    #     )
     db_path = os.path.join(os.path.dirname(__file__), "..", "db.sqlite3")
     return FileResponse(open(db_path, "rb"), as_attachment=True, filename="db.sqlite3")
 
@@ -583,8 +583,8 @@ def download_db(request):
 
 
 def download_media_folder(request):
-    if decrypt(request.GET.get("key")) != os.environ.get("BUILDERSSPACE_KEY"):
-        return HttpResponse("Unauthorised Request.")
+    # if decrypt(request.GET.get("key")) != os.environ.get("BUILDERSSPACE_KEY"):
+    #     return HttpResponse("Unauthorised Request.")
     media_root = settings.MEDIA_ROOT
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
     zip_filename = f"media_backup_{timestamp}.zip"
