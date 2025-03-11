@@ -22,8 +22,8 @@ backup_filename = f"db_{timestamp}.sqlite3"
 backup_media_folder = f"media_backup_{timestamp}.zip"
 
 # API endpoints for database and media backup
-db_url = "http://127.0.0.1:8000/api/download-db/"
-zip_url = "http://127.0.0.1:8000/api/download-media-folder/"
+db_url = "https://builderspace.onrender.com/api/download-db/"
+zip_url = "https://builderspace.onrender.com/api/download-media-folder/"
 
 api_key = "Hello"
 
