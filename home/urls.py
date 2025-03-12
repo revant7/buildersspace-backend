@@ -21,7 +21,7 @@ urlpatterns = [
         "verify-token/", TokenVerifyView.as_view(), name="token_verify"
     ),  # Verifies if an access token is still valid
     path(
-        "token/refresh/", TokenRefreshView.as_view(), name="token_refresh"
+        "token/refresh/", views.CustomAccessTokenGeneratorView, name="token_refresh"
     ),  # Takes a refresh token and returns a new access token
     path(
         "token/blacklist/", TokenBlacklistView.as_view(), name="token_blacklist"

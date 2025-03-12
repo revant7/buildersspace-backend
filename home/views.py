@@ -165,9 +165,30 @@ def custom_token_obtain_view(request):
     )
 
 
+@api_view(["POST"])
+@permission_classes([permissions.AllowAny])
+@credentials_required
+def CustomAccessTokenGeneratorView(request):
+    try:
+        refresh_token = request.data.get("refresh")
+        if not refresh_token:
+            return JsonResponse(
+                {"error": "Refresh token is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        # Generating a new access token
+        token = RefreshToken(refresh_token)
+        access_token = str(token.access_token)
+        return Response({"access": access_token}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response(
+            {"error": "Invalid or expired refresh token"},
+            status=status.HTTP_401_UNAUTHORIZED,
+        )
+
+
 # cast the vote
-
-
 @api_view(["POST"])
 @authentication_classes([CustomJWTAuthentication])
 @permission_classes([permissions.IsAuthenticated])
