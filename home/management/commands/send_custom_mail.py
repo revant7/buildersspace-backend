@@ -32,8 +32,30 @@ class Command(BaseCommand):
             pass
 
         for i in users:
+            noti = models.ParticipantNotification(
+                participant=i.participant_profile,
+                notification_title="Join Us for the Nights S1 Kickoff Session",
+                notification_message=(
+                    """
+Get ready to kick off an exciting journey with Nights S1!
+
+📅 Event Details:
+Date & Time: [15 March 2025 at 9:30 PM]
+Kickoff Session Link: https://lu.ma/mp4dualo
+
+Stay connected for all labs and sessions on our Discord Community: https://discord.gg/FHN8jkKt
+
+We can’t wait to see you there!
+
+Best regards,
+Builder's Space
+"""
+                ),
+                house=i.participant_profile.house,
+            )
+            noti.save()
             utils.send_email(
-                subject="Welcome to Nights S1",
+                subject="Join Us for the Nights S1 Kickoff Session",
                 message="",
                 to_email=i.email,
                 html_template="emails/kickoff_reminder_template.html",

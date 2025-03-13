@@ -18,7 +18,7 @@
 
         .container {
             max-width: 600px;
-            margin: 20px auto;
+            margin: 0 auto;
             background-color: #ffffff;
             border-radius: 8px;
             overflow: hidden;
@@ -30,9 +30,11 @@
             text-align: center;
             padding: 20px;
             background: linear-gradient(135deg, #1a0033 0%, #330066 100%);
-            color: white;
-            font-size: 22px;
-            font-weight: bold;
+        }
+
+        .logo {
+            width: 60px;
+            margin-bottom: 10px;
         }
 
         /* Banner styles */
@@ -56,12 +58,12 @@
         h1 {
             color: #330066;
             margin-top: 0;
-            font-size: 26px;
+            font-size: 28px;
         }
 
         p {
             font-size: 16px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .highlight {
@@ -92,7 +94,7 @@
         .btn {
             display: inline-block;
             background: linear-gradient(135deg, #4a0080 0%, #6600cc 100%);
-            color: white !important;
+            color: white;
             text-decoration: none;
             padding: 12px 30px;
             border-radius: 50px;
@@ -108,17 +110,17 @@
 
         /* Social links styles */
         .social-links {
-            margin-top: 20px;
+            margin-top: 30px;
         }
 
         .social-btn {
             display: inline-block;
             background-color: #330066;
-            color: white !important;
+            color: white;
             text-decoration: none;
             padding: 10px 20px;
             border-radius: 5px;
-            margin: 5px;
+            margin: 0 5px;
             font-size: 14px;
         }
 
@@ -135,47 +137,52 @@
 
 <body>
     <div class="container">
-        <div class="header">Nights S1 Kickoff Session 🎉</div>
+        <!-- Header with logo -->
 
+
+        <!-- Banner section (placeholder for the banner in your image) -->
         <div class="banner-container">
-            <img src="https://www.buildersspace.tech/templates/Frame%2051%20(3).png" alt="Nights S1 Kickoff Banner"
-                class="banner-img">
+            <img src="/templates/Frame 51 (3).png" alt="Nights S1 Kickoff #1 LAB #1" class="banner-img">
         </div>
 
+        <!-- Main content -->
         <div class="content">
-            <p>Dear <span class="highlight">{{ name }}</span>,</p>
+            <h1>Join Us for the Nights S1 Kickoff Session 🎉</h1>
 
-            <p>Join us for an electrifying start to <span class="highlight">Nights S1</span>! We have an exciting
-                session lined up just for you.</p>
+            <p>Dear <span class="highlight">[Participant's Name]</span>,</p>
+
+            <p>Get ready to kick off an exciting journey with <span class="highlight">Nights S1</span>! We've prepared
+                an amazing session to start this adventure together.</p>
 
             <div class="event-details">
                 <h2>📅 Event Details:</h2>
-                <p><strong>Date & Time:</strong> 15 March 2025 at 9:30 PM</p>
-                <p><strong>What to expect:</strong> Meet fellow participants, explore the program structure, and get a
-                    sneak peek into LAB #1.</p>
+                <p><strong>Date & Time:</strong> [15 March 2025 at 9:30 PM]</p>
+                <p><strong>What to expect:</strong> An interactive session where you'll meet fellow participants, learn
+                    about the program structure, and get a preview of what's coming in LAB #1.</p>
             </div>
 
             <div class="btn-container">
                 <a href="https://lu.ma/mp4dualo" class="btn">JOIN KICKOFF SESSION</a>
             </div>
 
-            <p>Stay connected for upcoming labs and sessions on our Discord Community:</p>
+            <p>Stay connected for all labs and sessions on our Discord Community:</p>
 
             <div class="social-links">
                 <a href="https://discord.gg/FHN8jkKt" class="social-btn">JOIN DISCORD</a>
             </div>
 
-            <p>Looking forward to seeing you there!</p>
+            <p>We can't wait to see you there!</p>
 
             <p>Best regards,<br>
-                <span class="highlight">Builder's Space</span><br>
-
+                <span class="highlight">Anubhav</span><br>
+                Organizer, Nights S1
             </p>
         </div>
 
+        <!-- Footer -->
         <div class="footer">
-            <p>If you have any questions, reach us at <a href="mailto:buildersspace9@gmail.com"
-                    style="color: #b39ddb; text-decoration: none;">buildersspace9@gmail.com</a></p>
+
+            <p>If you have any questions, please contact us at buildersspace9@gmail.com</p>
         </div>
     </div>
 </body>
