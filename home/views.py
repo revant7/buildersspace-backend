@@ -609,8 +609,8 @@ def mark_notification_read(request):
 
 
 @api_view(["POST"])
-@permission_classes([permissions.AllowAny])
 @credentials_required
+@permission_classes([permissions.IsAuthenticated])
 def send_notifications_and_emails(request):
 
     # Extract data from request
