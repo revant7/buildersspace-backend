@@ -599,6 +599,7 @@ def mark_notification_read(request):
     for i in noti_read:
         if not i.is_read:
             i.is_read = True
+    noti_read.save()
     return JsonResponse({"status": "Successfull!!!"})
 
 
