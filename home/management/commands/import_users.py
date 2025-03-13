@@ -114,6 +114,12 @@ class Command(BaseCommand):
                                 },
                             )
 
+                        else:
+                            self.stdout.write(
+                                self.style.WARNING(f"User Already Exists: {user.email}")
+                            )
+                            continue
+
                         participant = models.Participant.objects.get(user=user)
 
                         participant.about = about
