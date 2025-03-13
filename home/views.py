@@ -593,7 +593,7 @@ def mark_notification_read(request):
     participant = request.user.participant_profile
     notification_title = request.data.get("notification_title")
     is_read = request.data.get("is_read")
-    noti_read = models.ParticipantNotification.filter(
+    noti_read = models.ParticipantNotification.objects.filter(
         participant=participant, notification_title=notification_title
     )
     for i in noti_read:
