@@ -28,6 +28,11 @@ from datetime import datetime
 User = models.User
 
 
+# Login View For Admin
+class LoginView(TokenObtainPairView):
+    pass
+
+
 @api_view(["POST"])
 @permission_classes([permissions.AllowAny])
 @credentials_required
@@ -620,8 +625,10 @@ def send_notifications_and_emails(request):
     title = request.data.get("title")
     message = request.data.get("message")
     email_send = request.data.get("email_send")
+    notification_send = request.data.get("notification_send")
     if email_send:
         html_file = request.FILES.get("html_file")
+        html_context = request.data.get("html_context")
 
     if not title or not message:
         return Response(
@@ -635,13 +642,26 @@ def send_notifications_and_emails(request):
         # Send notification to a specific participant
         try:
             target_participant = participant
-            notification = models.ParticipantNotification.objects.create(
-                participant=target_participant,
-                notification_title=title,
-                notification_message=message,
-                house=target_participant.house,
-            )
-            notifications.append(notification)
+            if notification_send:
+                notification = models.ParticipantNotification.objects.create(
+                    participant=target_participant,
+                    notification_title=title,
+                    notification_message=message,
+                    house=target_participant.house,
+                )
+                notifications.append(notification)
+            if email_send:
+                utils.send_email(
+                    subject=title,
+                    message="",
+                    to_email=target_participant.user.email,
+                    html_template=html_file,
+                    context=html_context,
+                    smtp_server="smtp.gmail.com",
+                    smtp_port=587,
+                    smtp_username="buildersspace9@gmail.com",
+                    smtp_password="nispghlsqzkknzvd",
+                )
         except models.Participant.DoesNotExist:
             return Response(
                 {"error": "Participant not found."}, status=status.HTTP_404_NOT_FOUND
@@ -655,27 +675,57 @@ def send_notifications_and_emails(request):
                 {"error": "No participants found in the specified house."},
                 status=status.HTTP_404_NOT_FOUND,
             )
-
-        for target_participant in house_participants:
-            notification = models.ParticipantNotification.objects.create(
-                participant=target_participant,
-                notification_title=title,
-                notification_message=message,
-                house=house,
-            )
-            notifications.append(notification)
+        if notification_send:
+            for target_participant in house_participants:
+                notification = models.ParticipantNotification.objects.create(
+                    participant=target_participant,
+                    notification_title=title,
+                    notification_message=message,
+                    house=house,
+                )
+                notifications.append(notification)
+        if email_send:
+            for target_participant in house_participants:
+                utils.send_email(
+                    subject=title,
+                    message="",
+                    to_email=target_participant.user.email,
+                    html_template=html_file,
+                    context=html_context,
+                    smtp_server="smtp.gmail.com",
+                    smtp_port=587,
+                    smtp_username="buildersspace9@gmail.com",
+                    smtp_password="nispghlsqzkknzvd",
+                )
 
     else:
         # Send notification to all participants
         all_participants = models.Participant.objects.all()
-        for target_participant in all_participants:
-            notification = models.ParticipantNotification.objects.create(
-                participant=target_participant,
-                notification_title=title,
-                notification_message=message,
-                house=target_participant.house,
-            )
-            notifications.append(notification)
+
+        if notification_send:
+
+            for target_participant in all_participants:
+                notification = models.ParticipantNotification.objects.create(
+                    participant=target_participant,
+                    notification_title=title,
+                    notification_message=message,
+                    house=target_participant.house,
+                )
+                notifications.append(notification)
+
+        if email_send:
+            for target_participant in all_participants:
+                utils.send_email(
+                    subject=title,
+                    message="",
+                    to_email=target_participant.user.email,
+                    html_template=html_file,
+                    context=html_context,
+                    smtp_server="smtp.gmail.com",
+                    smtp_port=587,
+                    smtp_username="buildersspace9@gmail.com",
+                    smtp_password="nispghlsqzkknzvd",
+                )
 
     return Response(
         {"message": "Notifications sent successfully!", "count": len(notifications)},

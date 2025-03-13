@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
     TokenRefreshView,
     TokenBlacklistView,
     TokenVerifyView,
@@ -26,6 +27,8 @@ urlpatterns = [
     path(
         "token/blacklist/", TokenBlacklistView.as_view(), name="token_blacklist"
     ),  # Revokes a Refresh Token
+    path("api/admin/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/admin/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     # PATCH Requests For Updating Data
     path("update-user/", views.update_user, name="update_user"),  # update_user details
     path(
