@@ -80,6 +80,16 @@ urlpatterns = [
         views.void_request_for_active_state,
         name="void_request_for_active_state",
     ),
+    path(
+        "get-notifications-user/",
+        views.get_notifications_user,
+        name="get_notifications_user",
+    ),
+    path(
+        "mark-notification-read/",
+        views.mark_notification_read,
+        name="mark_notification_read",
+    ),
     path("download-db/", views.download_db, name="download_db"),
     path(
         "download-media-folder/",

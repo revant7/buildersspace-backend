@@ -565,6 +565,41 @@ def get_like_count_for_all_projects(request):
 
 
 @api_view(["GET"])
+@authentication_classes([CustomJWTAuthentication])
+@permission_classes([permissions.IsAuthenticated])
+def get_notifications_user(request):
+    participant = request.user.participant_profile
+    notis = models.ParticipantNotification.objects.filter(participant=participant)
+    notis_list = []
+    for i in notis:
+        data = {
+            "notification_title": i.notification_title,
+            "notification_message": i.notification_message,
+            "timestamp": i.timestamp,
+            "house": i.house,
+            "is_read": i.is_read,
+        }
+        notis_list.append(data)
+
+    return JsonResponse(notis_list, safe=False)
+
+
+@api_view(["PATCH"])
+@authentication_classes([CustomJWTAuthentication])
+@permission_classes([permissions.IsAuthenticated])
+def mark_notification_read(request):
+    participant = request.user.participant_profile
+    notification_title = request.data.get("notification_title")
+    is_read = request.data.get("is_read")
+    noti_read = models.ParticipantNotification.filter(
+        participant=participant, notification_title=notification_title
+    )
+    for i in noti_read:
+        if not i.is_read:
+            i.is_read = True
+
+
+@api_view(["GET"])
 @permission_classes([permissions.AllowAny])
 def void_request_for_active_state(request):
     return JsonResponse({"response": "Just a normal checkout run!"})
