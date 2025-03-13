@@ -527,6 +527,7 @@ def get_user_details(request):
 
 
 @api_view(["GET"])
+@permission_classes([permissions.AllowAny])
 @credentials_required
 def get_vote_count_for_all_projects(request):
     projects_vote_counts = models.VoteCount.objects.all()
@@ -546,6 +547,7 @@ def get_vote_count_for_all_projects(request):
 
 
 @api_view(["GET"])
+@permission_classes([permissions.AllowAny])
 @credentials_required
 def get_like_count_for_all_projects(request):
     projects_like_counts = models.LikeCount.objects.all()
@@ -597,6 +599,86 @@ def mark_notification_read(request):
     for i in noti_read:
         if not i.is_read:
             i.is_read = True
+
+
+@api_view(["POST"])
+@permission_classes([permissions.AllowAny])
+@credentials_required
+def send_notifications_and_emails(request):
+
+    # Extract data from request
+    email = request.data.get("email")
+    if email:
+        user = models.User.objects.get(email=email)
+        participant = user.participant_profile
+    else:
+        user = None
+        participant = None
+    house = request.data.get("house")
+    title = request.data.get("title")
+    message = request.data.get("message")
+    email_send = request.data.get("email_send")
+    if email_send:
+        html_file = request.FILES.get("html_file")
+
+    if not title or not message:
+        return Response(
+            {"error": "Notification title and message are required."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    notifications = []
+
+    if participant:
+        # Send notification to a specific participant
+        try:
+            target_participant = participant
+            notification = models.ParticipantNotification.objects.create(
+                participant=target_participant,
+                notification_title=title,
+                notification_message=message,
+                house=target_participant.house,
+            )
+            notifications.append(notification)
+        except models.Participant.DoesNotExist:
+            return Response(
+                {"error": "Participant not found."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+    elif house:
+        # Send notification to all participants in a specific house
+        house_participants = models.Participant.objects.filter(house=house)
+        if not house_participants.exists():
+            return Response(
+                {"error": "No participants found in the specified house."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        for target_participant in house_participants:
+            notification = models.ParticipantNotification.objects.create(
+                participant=target_participant,
+                notification_title=title,
+                notification_message=message,
+                house=house,
+            )
+            notifications.append(notification)
+
+    else:
+        # Send notification to all participants
+        all_participants = models.Participant.objects.all()
+        for target_participant in all_participants:
+            notification = models.ParticipantNotification.objects.create(
+                participant=target_participant,
+                notification_title=title,
+                notification_message=message,
+                house=target_participant.house,
+            )
+            notifications.append(notification)
+
+    return Response(
+        {"message": "Notifications sent successfully!", "count": len(notifications)},
+        status=status.HTTP_201_CREATED,
+    )
 
 
 @api_view(["GET"])

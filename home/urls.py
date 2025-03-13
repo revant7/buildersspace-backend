@@ -90,6 +90,11 @@ urlpatterns = [
         views.mark_notification_read,
         name="mark_notification_read",
     ),
+    path(
+        "send-notifications-and-emails/",
+        views.send_notifications_and_emails,
+        name="send_notifications_and_emails",
+    ),
     path("download-db/", views.download_db, name="download_db"),
     path(
         "download-media-folder/",

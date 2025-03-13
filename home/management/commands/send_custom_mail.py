@@ -56,15 +56,15 @@ Builder's Space
                 house=i.participant_profile.house,
             )
             noti.save()
-            # utils.send_email(
-            #     subject="Join Us for the Nights S1 Kickoff Session",
-            #     message="",
-            #     to_email=i.email,
-            #     html_template="emails/kickoff_reminder_template.html",
-            #     context={
-            #         "name": i.first_name,
-            #     },
-            # )
+            utils.send_email(
+                subject="Join Us for the Nights S1 Kickoff Session",
+                message="",
+                to_email=i.email,
+                html_template="emails/kickoff_reminder_template.html",
+                context={
+                    "name": i.first_name,
+                },
+            )
             self.stdout.write(
                 self.style.SUCCESS(f"Successfully Created Notification for {i.email}.")
             )
