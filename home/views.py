@@ -20,6 +20,7 @@ from .authentication import CustomJWTAuthentication
 from .custom_decorators import credentials_required
 from django.conf import settings
 from datetime import datetime
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 # Create your views here.
 
