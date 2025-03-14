@@ -232,7 +232,7 @@ def do_like(request):
     user = request.user
     user_project_liked = request.data.get("email")
     if user_project_liked:
-        user_project_liked = User.objects.get(user_project_liked)
+        user_project_liked = User.objects.get(email=user_project_liked)
     project = user_project_liked.participant_profile.participant_project
     if user.is_attendee:
         if (
@@ -285,7 +285,7 @@ def delete_like(request):
     user = request.user
     user_project_liked = request.GET.get("email")
     if user_project_liked:
-        user_project_liked = User.objects.get(user_project_liked)
+        user_project_liked = User.objects.get(email=user_project_liked)
     project = user_project_liked.participant_profile.participant_project
     if user.is_attendee:
         if (
