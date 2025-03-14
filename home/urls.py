@@ -63,8 +63,9 @@ urlpatterns = [
     path(
         "cast-attendee-vote/", views.cast_vote, name="cast_vote"
     ),  # casting the attendee's Vote
-    # Endpoint for doing like
+    # Endpoint for like handling
     path("post-like/", views.do_like, name="do_like"),  # doing like
+    path("delete-like/", views.delete_like, name="do_like"),  # deleting like
     # Endpoint for getting vote count for all projects
     path(
         "get-vote-count-for-all-projects/",

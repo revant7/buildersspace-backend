@@ -282,7 +282,46 @@ def do_like(request):
 @authentication_classes([CustomJWTAuthentication])
 @permission_classes([permissions.IsAuthenticated])
 def delete_like(request):
-    pass
+    user = request.user
+    user_project_liked = request.GET.get("email")
+    if user_project_liked:
+        user_project_liked = User.objects.get(user_project_liked)
+    project = user_project_liked.participant_profile.participant_project
+    if user.is_attendee:
+        if (
+            len(
+                models.Like.objects.filter(
+                    attendee=user.attendee_profile, project=project
+                )
+            )
+            == 0
+        ):
+            return JsonResponse({"status": "Attendee User Has No Likes This Project"})
+
+        liked_project = models.Like.objects.filter(
+            attendee=user.attendee_profile, project=project
+        )
+        liked_project[0].delete()
+        return JsonResponse({"status": "Attendee Like Successfully Deleted."})
+
+        if user.is_participant:
+            if (
+                len(
+                    models.Like.objects.filter(
+                        participant=user.participant_profile, project=project
+                    )
+                )
+                == 0
+            ):
+                return JsonResponse(
+                    {"status": "Participant User Has No Likes This Project"}
+                )
+
+            liked_project = models.Like.objects.filter(
+                participant=user.participant_profile, project=project
+            )
+            liked_project[0].delete()
+            return JsonResponse({"status": "Participant Like Successfully Deleted."})
 
 
 # patch user data
