@@ -251,7 +251,7 @@ def do_like(request):
         like_count = models.LikeCount.objects.filter(project=project).update(
             count=F("count") + 1
         )
-        like_count.save()
+
         return JsonResponse({"status": "Attendee Successfully Liked."})
     if user.is_participant:
         if (
@@ -272,7 +272,6 @@ def do_like(request):
             count=F("count") + 1
         )
 
-        like_count.save()
         return JsonResponse({"status": "Participant Successfully Liked."})
 
 
