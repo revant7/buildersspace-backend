@@ -299,6 +299,9 @@ def delete_like(request):
             attendee=user.attendee_profile, project=project
         )
         liked_project[0].delete()
+        like_count = models.LikeCount.objects.filter(project=project).update(
+            count=F("count") - 1
+        )
         return JsonResponse({"status": "Attendee Like Successfully Deleted."})
 
     if user.is_participant:
@@ -317,6 +320,9 @@ def delete_like(request):
             participant=user.participant_profile, project=project
         )
         liked_project[0].delete()
+        like_count = models.LikeCount.objects.filter(project=project).update(
+            count=F("count") - 1
+        )
         return JsonResponse({"status": "Participant Like Successfully Deleted."})
 
 
