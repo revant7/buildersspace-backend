@@ -21,6 +21,7 @@ from .custom_decorators import credentials_required
 from django.conf import settings
 from datetime import datetime
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.db.models import F
 
 # Create your views here.
 
@@ -247,10 +248,9 @@ def do_like(request):
         like = models.Like.objects.create(
             attendee=user.attendee_profile, project=project
         )
-        like_count = models.LikeCount.objects.get_or_create(
-            project=project, defaults={"count": 0}
+        like_count = models.LikeCount.objects.filter(project=project).update(
+            count=F("count") + 1
         )
-        like.save()
         like_count.count += 1
         like_count.save()
         return JsonResponse({"status": "Attendee Successfully Liked."})
@@ -269,10 +269,10 @@ def do_like(request):
         like = models.Like.objects.create(
             participant=user.participant_profile, project=project
         )
-        like_count = models.LikeCount.objects.get_or_create(
-            project=project, defaults={"count": 0}
+        like_count = models.LikeCount.objects.filter(project=project).update(
+            count=F("count") + 1
         )
-        like.save()
+
         like_count.count += 1
         like_count.save()
         return JsonResponse({"status": "Participant Successfully Liked."})
@@ -304,24 +304,23 @@ def delete_like(request):
         liked_project[0].delete()
         return JsonResponse({"status": "Attendee Like Successfully Deleted."})
 
-        if user.is_participant:
-            if (
-                len(
-                    models.Like.objects.filter(
-                        participant=user.participant_profile, project=project
-                    )
+    if user.is_participant:
+        if (
+            len(
+                models.Like.objects.filter(
+                    participant=user.participant_profile, project=project
                 )
-                == 0
-            ):
-                return JsonResponse(
-                    {"status": "Participant User Has No Likes This Project"}
-                )
-
-            liked_project = models.Like.objects.filter(
-                participant=user.participant_profile, project=project
             )
-            liked_project[0].delete()
-            return JsonResponse({"status": "Participant Like Successfully Deleted."})
+            == 0
+        ):
+            return JsonResponse(
+                {"status": "Participant User Has No Likes This Project"}
+            )
+        liked_project = models.Like.objects.filter(
+            participant=user.participant_profile, project=project
+        )
+        liked_project[0].delete()
+        return JsonResponse({"status": "Participant Like Successfully Deleted."})
 
 
 # patch user data
