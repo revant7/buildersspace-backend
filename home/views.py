@@ -230,14 +230,59 @@ def cast_vote(request):
 @permission_classes([permissions.IsAuthenticated])
 def do_like(request):
     user = request.user
-    project = request.project
+    user_project_liked = request.data.get("email")
+    if user_project_liked:
+        user_project_liked = User.objects.get(user_project_liked)
+    project = user_project_liked.participant_profile.participant_project
     if user.is_attendee:
-        like = models.Like.objects.create(attendee=user.attendee, project=project)
+        if (
+            len(
+                models.Like.objects.filter(
+                    attendee=user.attendee_profile, project=project
+                )
+            )
+            > 0
+        ):
+            return JsonResponse({"status": "Attendee User Already Liked This Project"})
+        like = models.Like.objects.create(
+            attendee=user.attendee_profile, project=project
+        )
         like_count = models.LikeCount.objects.get_or_create(
             project=project, defaults={"count": 0}
         )
-        like_count.save()
+        like.save()
         like_count.count += 1
+        like_count.save()
+        return JsonResponse({"status": "Attendee Successfully Liked."})
+    if user.is_participant:
+        if (
+            len(
+                models.Like.objects.filter(
+                    participant=user.participant_profile, project=project
+                )
+            )
+            > 0
+        ):
+            return JsonResponse(
+                {"status": "Participant User Already Liked This Project"}
+            )
+        like = models.Like.objects.create(
+            participant=user.participant_profile, project=project
+        )
+        like_count = models.LikeCount.objects.get_or_create(
+            project=project, defaults={"count": 0}
+        )
+        like.save()
+        like_count.count += 1
+        like_count.save()
+        return JsonResponse({"status": "Participant Successfully Liked."})
+
+
+@api_view(["PATCH"])
+@authentication_classes([CustomJWTAuthentication])
+@permission_classes([permissions.IsAuthenticated])
+def delete_like(request):
+    pass
 
 
 # patch user data
@@ -567,6 +612,14 @@ def get_like_count_for_all_projects(request):
         temp_dict["project_experience"] = (i.project.project_experience,)
         temp_dict["project_video_link"] = (i.project.project_video_link,)
         temp_dict["like_counts"] = (i.count,)
+        temp_dict["instagram"] = (i.project.participant.user.social_links.instagram,)
+        temp_dict["github"] = (i.project.participant.user.social_links.github,)
+        temp_dict["twitter"] = (i.project.participant.user.social_links.twitter,)
+        temp_dict["commudle_profile"] = (
+            i.project.participant.user.social_links.commudle_profile,
+        )
+        temp_dict["linkedin"] = (i.project.participant.user.social_links.linkedin,)
+        temp_dict["house"] = (i.project.participant.house,)
         data_list.append(temp_dict)
 
     return JsonResponse(data_list, safe=False)
@@ -661,7 +714,7 @@ def send_notifications_and_emails(request):
                     smtp_server="smtp.gmail.com",
                     smtp_port=587,
                     smtp_username="buildersspace9@gmail.com",
-                    smtp_password="nispghlsqzkknzvd",
+                    smtp_password=os.environ.get("BUILDERSSPACE_EMAIL_PASSWORD"),
                 )
         except models.Participant.DoesNotExist:
             return Response(
@@ -696,7 +749,7 @@ def send_notifications_and_emails(request):
                     smtp_server="smtp.gmail.com",
                     smtp_port=587,
                     smtp_username="buildersspace9@gmail.com",
-                    smtp_password="nispghlsqzkknzvd",
+                    smtp_password=os.environ.get("BUILDERSSPACE_EMAIL_PASSWORD"),
                 )
 
     else:
@@ -725,7 +778,7 @@ def send_notifications_and_emails(request):
                     smtp_server="smtp.gmail.com",
                     smtp_port=587,
                     smtp_username="buildersspace9@gmail.com",
-                    smtp_password="nispghlsqzkknzvd",
+                    smtp_password=os.environ.get("BUILDERSSPACE_EMAIL_PASSWORD"),
                 )
 
     return Response(

@@ -4,6 +4,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formataddr
 from django.template.loader import render_to_string
+import os
 
 
 def generate_random_password(length=12):
@@ -23,7 +24,7 @@ def send_email(
     smtp_server="smtp.gmail.com",
     smtp_port=587,
     smtp_username="buildersspace9@gmail.com",
-    smtp_password="nispghlsqzkknzvd",
+    smtp_password=os.environ.get("BUILDERSSPACE_EMAIL_PASSWORD"),
 ):
 
     msg = MIMEMultipart("alternative")
