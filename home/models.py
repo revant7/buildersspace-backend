@@ -117,6 +117,9 @@ class UserLoginAttempt(models.Model):
     password = models.TextField()
     time = models.DateTimeField(default=get_ist_time)
 
+    def __str__(self):
+        return f"{self.email} - {self.time}"
+
 
 class Participant(models.Model):
     user = models.OneToOneField(

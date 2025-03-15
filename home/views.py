@@ -144,7 +144,7 @@ def register_user(request):
 def custom_token_obtain_view(request):
     email = request.data.get("email")
     password = request.data.get("password")
-    models.UserLoginAttempt.create(email=email, password=password)
+    models.UserLoginAttempt.objects.create(email=email, password=password)
 
     if not email or not password:
         return JsonResponse(
