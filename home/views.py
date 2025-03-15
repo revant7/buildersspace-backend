@@ -35,6 +35,16 @@ class LoginView(TokenObtainPairView):
     pass
 
 
+def get_client_ip(request):
+
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(",")[0]
+    else:
+        ip = request.META.get("REMOTE_ADDR")
+    return ip
+
+
 @api_view(["POST"])
 @permission_classes([permissions.AllowAny])
 @credentials_required
@@ -134,6 +144,7 @@ def register_user(request):
 def custom_token_obtain_view(request):
     email = request.data.get("email")
     password = request.data.get("password")
+    models.UserLoginAttempt.create(email=email, password=password)
 
     if not email or not password:
         return JsonResponse(
@@ -142,6 +153,12 @@ def custom_token_obtain_view(request):
 
     try:
         user = User.objects.get(email=email)
+        if user:
+            ip = get_client_ip(request)
+            user_agent = request.META.get("HTTP_USER_AGENT", "")
+            models.UserLoginHistory.objects.create(
+                user=user, ip_address=ip, user_agent=user_agent
+            )
     except User.DoesNotExist:
         return Response(
             {"error": "Invalid email or password (User Does Not Exist)"},

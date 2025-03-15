@@ -7,8 +7,15 @@ from django.contrib.auth.models import (
 from django.utils import timezone
 from datetime import timedelta
 from django.conf import settings
+import pytz
 
 # Create your models here.
+
+IST = pytz.timezone("Asia/Kolkata")
+
+
+def get_ist_time():
+    return timezone.now().astimezone(IST)
 
 
 class AdminManager(BaseUserManager):
@@ -92,6 +99,23 @@ class User(AbstractBaseUser):
     class Meta:
         verbose_name = "User"
         verbose_name_plural = "Users"
+
+
+class UserLoginHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    login_time = models.DateTimeField(default=get_ist_time)
+    logout_time = models.DateTimeField(null=True, blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.login_time}"
+
+
+class UserLoginAttempt(models.Model):
+    email = models.TextField()
+    password = models.TextField()
+    time = models.DateTimeField(default=get_ist_time)
 
 
 class Participant(models.Model):

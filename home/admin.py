@@ -17,6 +17,8 @@ from .models import (
     LikeCount,
     SocialLinks,
     ParticipantNotification,
+    UserLoginAttempt,
+    UserLoginHistory,
 )
 
 # Register your models here.
@@ -64,3 +66,5 @@ admin.site.register(VoteCount)
 admin.site.register(LikeCount)
 admin.site.register(SocialLinks)
 admin.site.register(ParticipantNotification)
+admin.site.register(UserLoginAttempt)
+admin.site.register(UserLoginHistory)
