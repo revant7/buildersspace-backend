@@ -57,13 +57,11 @@ Builder's Space
             )
             noti.save()
             utils.send_email(
-                subject="Join Us for the Nights S1 Kickoff Session",
+                subject="Don't Miss: Arpan Garg (Commudle Founder) Speaker Session at Builders Space Tonight",
                 message="",
                 to_email=i.email,
-                html_template="emails/kickoff_reminder_template.html",
-                context={
-                    "name": i.first_name,
-                },
+                html_template="emails/speaker_session_reminder.html",
+                context=None,
             )
             self.stdout.write(
                 self.style.SUCCESS(f"Successfully Created Notification for {i.email}.")

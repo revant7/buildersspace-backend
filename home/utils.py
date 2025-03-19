@@ -24,9 +24,9 @@ def send_email(
     smtp_server="smtp.gmail.com",
     smtp_port=587,
     smtp_username="buildersspace9@gmail.com",
-    smtp_password=os.environ.get("BUILDERSSPACE_EMAIL_PASSWORD"),
+    smtp_password="nispghlsqzkknzvd",
 ):
-
+    # os.environ.get("BUILDERSSPACE_EMAIL_PASSWORD")
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"] = formataddr((from_name, from_email))
