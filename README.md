@@ -16,12 +16,12 @@ I'm currently serving as the **Backend Developer Head** and **Technical Co-Lead*
 ## 🚀 Deployment Details
 
 We use the following stack:
-- **Node.js** with **Express**
-- **MongoDB** for database
-- Hosted on **Render / Railway / Vercel / [Your deployment platform]**
-- Environment variables managed using `.env` files (see below)
+- **Django** with **Django-Rest-Framework**
+- **SQLite** for database
+- Hosted on **Render**
+- Environment variables managed using `.env` files
 
-> Deployment URL: [https://your-api-url.com](https://your-api-url.com)
+> Deployment URL: https://builderspace.onrender.com/ 
 
 ---
 
@@ -37,12 +37,12 @@ To get started with development, follow these steps:
 
 2. **Install dependencies**
    ```bash
-   npm install
+   pip install -r requirements.txt
 
 
 3. **Run the app**
    ```bash
-   npm run dev
+   python manage.py runserver
 
 
 
